@@ -1,12 +1,12 @@
 # Uncomment the required imports before adding the code
 
-# from django.shortcuts import render
-# from django.http import HttpResponseRedirect, HttpResponse
-# from django.contrib.auth.models import User
-# from django.shortcuts import get_object_or_404, render, redirect
-# from django.contrib.auth import logout
-# from django.contrib import messages
-# from datetime import datetime
+from django.shortcuts import render
+from django.http import HttpResponseRedirect, HttpResponse
+from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404, render, redirect
+from django.contrib.auth import logout
+from django.contrib import messages
+from datetime import datetime
 
 from django.http import JsonResponse
 from django.contrib.auth import login, authenticate
@@ -40,12 +40,56 @@ def login_user(request):
 
 # Create a `logout_request` view to handle sign out request
 # def logout_request(request):
-# ...
+@csrf_exempt
+def logout_user(request):
+    logout(request)
+    data = {"userName":""}
+    return JsonResponse(data)
+
+
 
 # Create a `registration` view to handle sign up request
 # @csrf_exempt
 # def registration(request):
-# ...
+@csrf_exempt
+def registration(request):
+    if request.method == 'POST':
+        try:
+            # Parse the JSON request body
+            body = json.loads(request.body)
+            username = body.get('userName')
+            password = body.get('password')
+            first_name = body.get('firstName')
+            last_name = body.get('lastName')
+            email = body.get('email')
+
+            # Check if the user already exists
+            if User.objects.filter(username=username).exists():
+                return JsonResponse({"error": "Already Registered"}, status=400)
+
+            # Create a new user
+            user = User.objects.create_user(
+                username=username, 
+                first_name=first_name, 
+                last_name=last_name, 
+                password=password, 
+                email=email
+            )
+
+            # Log the user in
+            login(request, user)
+
+            # Respond with success
+            return JsonResponse({"status": "success", "userName": username}, status=201)
+
+        except Exception as e:
+            logger.error(f"Error during registration: {str(e)}")
+            return JsonResponse({"error": "Registration failed. Please try again."}, status=500)
+
+    # Return method not allowed for non-POST requests
+    return JsonResponse({"error": "Method not allowed"}, status=405)
+
+
 
 # # Update the `get_dealerships` view to render the index page with
 # a list of dealerships
