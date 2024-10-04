@@ -16,8 +16,9 @@ urlpatterns = [
     # Path for logout
     path('logout/', views.logout_user, name='logout'),
     path('get_cars/', views.get_cars, name='getcars'),
-    path(route='reviews/dealer/<int:dealer_id>', view=views.get_dealer_reviews, name='dealer_details'),
-    path(route='dealer/<int:dealer_id>', view=views.get_dealer_details, name='dealer_details'),
+    path('dealer/<int:dealer_id>/', views.get_dealer_details, name='dealer_details'),
+    path('reviews/dealer/<int:dealer_id>/', views.get_dealer_reviews, name='dealer_reviews'),
+
     # Paths for dealer reviews and adding reviews (to be implemented)
     # path('dealers/<int:dealer_id>/reviews/', views.get_dealer_reviews, name='dealer_reviews'),
     # path('add_review/', views.add_review, name='add_review'),

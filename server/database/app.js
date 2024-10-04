@@ -92,8 +92,8 @@ app.get('/fetchDealer/:id', async (req, res) => {
 
 
 // Insert review
-app.post('/insert_review', express.raw({ type: '*/*' }), async (req, res) => {
-  const data = JSON.parse(req.body);
+app.post('/insert_review', async (req, res) => {
+  const data = req.body; // Automatically parsed as JSON
   const documents = await Reviews.find().sort({ id: -1 });
   let new_id = documents.length ? documents[0]['id'] + 1 : 1; // Ensure new_id is initialized correctly
 
@@ -117,6 +117,7 @@ app.post('/insert_review', express.raw({ type: '*/*' }), async (req, res) => {
     res.status(500).json({ error: 'Error inserting review' });
   }
 });
+
 
 // Start the Express server
 app.listen(port, () => {

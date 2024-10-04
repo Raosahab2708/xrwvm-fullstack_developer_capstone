@@ -17,7 +17,7 @@ def get_request(endpoint, **kwargs):
     print(f"GET from {request_url}")
 
     try:
-        response = requests.get(request_url)
+        response = requests.get(request_url,timeout=30)
         response.raise_for_status()  # Raises an HTTPError for bad responses
         return response.json()
     except requests.exceptions.RequestException as e:
@@ -26,7 +26,7 @@ def get_request(endpoint, **kwargs):
 
 # Function to analyze review sentiments
 def analyze_review_sentiments(text):
-    request_url = f"{sentiment_analyzer_url}analyze/{text}"
+    request_url = f"{sentiment_analyzer_url}/analyze/{text}"
     print(f"Analyzing review sentiment at URL: {request_url}")  # Log the URL
     
     try:
